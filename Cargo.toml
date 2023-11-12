@@ -8,3 +8,6 @@ edition = "2021"
 [dependencies]
 actix-web = "4"
 utoipa = { version = "3", features = ["actix_extras"] }
+sqlx = { version = "0.7.2", features = ["runtime-async-std", "postgres", "chrono", "uuid"] }
+env_logger = "0.10.1"
+dotenv = "0.15.0"
