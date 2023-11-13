@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use actix_web::{web, App, HttpServer};
+use actix_web::{middleware::Logger, web, App, HttpServer};
 use dotenv::dotenv;
 use sqlx::postgres::PgPoolOptions;
 
@@ -14,6 +14,8 @@ mod routes;
 
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
+
+    env_logger::init_from_env(env_logger::Env::new().default_filter_or("debug"));
 
     let settings = conf::load_env();
 
@@ -37,6 +39,7 @@ async fn main() -> std::io::Result<()> {
 
     HttpServer::new(move || {
         App::new()
+            .wrap(Logger::new("%a %{User-Agent}i"))
             .app_data(web::Data::new(conf::AppState {
                 db_pool: db_pool.clone(),
             }))
