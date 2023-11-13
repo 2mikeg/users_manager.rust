@@ -1,5 +1,8 @@
+use sqlx::{Pool, Postgres};
 use std::env;
-
+pub struct AppState {
+    pub db_pool: Pool<Postgres>,
+}
 pub struct Conf {
     pub db_host: String,
     pub db_port: String,
@@ -16,11 +19,11 @@ pub fn load_env() -> Conf {
     let db_name = env::var("DB_NAME").expect("DB_NAME var not found");
 
     let conf = Conf {
-        db_host: db_host,
-        db_port: db_port,
-        db_user: db_user,
-        db_password: db_password,
-        db_name: db_name,
+        db_host,
+        db_port,
+        db_user,
+        db_password,
+        db_name,
     };
 
     conf
