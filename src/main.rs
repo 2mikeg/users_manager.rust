@@ -44,6 +44,8 @@ async fn main() -> std::io::Result<()> {
                 db_pool: db_pool.clone(),
             }))
             .service(handler::users::create_user)
+            .service(handler::users::get_users)
+            .service(handler::users::delete_user)
     })
     .bind(("127.0.0.1", 8080))?
     .run()
