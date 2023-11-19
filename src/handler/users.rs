@@ -1,5 +1,4 @@
-use actix_web::{delete, get};
-use actix_web::{post, web, HttpResponse, Responder};
+use actix_web::{web, HttpResponse, Responder};
 use sqlx;
 use uuid::Uuid;
 
@@ -8,7 +7,6 @@ use crate::model;
 
 use password_auth::generate_hash;
 
-#[post("/users")]
 async fn create_user(
     app_state: web::Data<conf::AppState>,
     data: web::Json<model::users::CreateUser>,
@@ -39,7 +37,6 @@ async fn create_user(
     return HttpResponse::Created().json(response);
 }
 
-#[get("/users/{user_id}")]
 async fn get_users(
     app_state: web::Data<conf::AppState>,
     path: web::Path<String>,
@@ -69,7 +66,6 @@ async fn get_users(
     return HttpResponse::Ok().json(response);
 }
 
-#[delete("/users/{user_id}")]
 async fn delete_user(
     app_state: web::Data<conf::AppState>,
     path: web::Path<String>,
@@ -95,4 +91,13 @@ async fn delete_user(
     let _ = delete_user_query.unwrap();
 
     return HttpResponse::Ok().json(user_id_str);
+}
+
+pub fn users_config(cfg: &mut web::ServiceConfig) {
+    cfg.service(web::resource("/").route(web::post().to(create_user)))
+        .service(
+            web::resource("/{user_id}")
+                .route(web::delete().to(delete_user))
+                .route(web::get().to(get_users)),
+        );
 }

@@ -43,9 +43,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(web::Data::new(conf::AppState {
                 db_pool: db_pool.clone(),
             }))
-            .service(handler::users::create_user)
-            .service(handler::users::get_users)
-            .service(handler::users::delete_user)
+            .service(web::scope("/user").configure(handler::users::users_config))
     })
     .bind(("127.0.0.1", 8080))?
     .run()
